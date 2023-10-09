@@ -4,7 +4,6 @@ author: "Nicole Merullo"
 date: "2023-10-09"
 output:
   rmdformats::readthedown:
-    toc: true
 ---
 ```{r warmbodies, echo=FALSE, fig.align='center', out.width='25%'}
 knitr::include_graphics('https://cdn.images.express.co.uk/img/dynamic/36/590x/Warm_bodies-376212.jpg?r=1686998680160') 
@@ -17,7 +16,7 @@ library(ggplot2)
 ```
 
 ## 5 Challenges
-1.
+1. Received this error while trying to run 
 2.
 3.
 4.
@@ -136,35 +135,61 @@ pw1 <- pw1 + geom_point()
 pw1 <- pw1 + theme(legend.position = "bottom", legend.title = element_blank())
 pw1
 ```
+Looks like there is a relationship between age and hieght- height is dependent on age. As age goes up, height also goes up. However, there is no such relationship between age and weight.
 
 ## Question 4
 
 Using histograms and Q-Q plots, check whether the quantitative variables seem to be drawn from a normal distribution. Which seem to be and which do not (hint: not all are drawn from the normal distribution)? For those that are not normal, can you determine from which common distribution they are drawn?
 
 ```{r QQ-Height}
-par(mfrow, c(2,1))
-
+par(mfrow = c(1,2))
+min(h)
+max(h)
+hist(h, breaks = seq(50,90,1), probability= TRUE, main = "Probability of Height of Zombies", xlab = "Height", ylab = "probability")
+qqnorm(h, main = "Normal QQ Plot for Height of Zombies")
+qqline(h, col = "gray")
 ```
 
 ```{r QQ-Weight}
-par(mfrow, c(2,1))
-
+par(mfrow = c(1,2))
+min(w)
+max(w)
+hist(w, breaks = seq(80,220,1), probability= TRUE, main = "Probability of Weight of Zombies", xlab = "Weight", ylab = "probability")
+qqnorm(w, main = "Normal QQ Plot Weight of Zombies")
+qqline(w, col = "gray")
 ```
 
 ```{r QQ-Age}
-par(mfrow, c(2,1))
-
+par(mfrow = c(1,2))
+min(a)
+max(a)
+hist(a, breaks = seq(9,30,1), probability= TRUE, main = "Probability of Age of Zombies", xlab = "Age", ylab = "probability")
+qqnorm(a, main = "Normal QQ Plot Age of Zombies")
+qqline(a, col = "gray")
+```
 ```
 
 ```{r QQ-Kills}
-par(mfrow, c(2,1))
-
+par(mfrow = c(1,2))
+min(zk)
+max(zk)
+hist(zk, breaks = seq(-1,12,1), probability= TRUE, main = "Probability of Zombie Kills", xlab = " of Zombie Kills", ylab = "probability")
+qqnorm(zk, main = "Normal QQ Plot of Zombie Kills")
+qqline(zk, col = "gray")
 ```
+
+This is a poisson distribution which makes sense because it is a similar scenario to the titi calls. How many kills are observed? 
 
 ```{r QQ-YrsEducated}
-par(mfrow, c(2,1))
-
+par(mfrow = c(1,2))
+min(ye)
+max(ye)
+hist(ye, breaks = seq(0,9,1), probability= TRUE, main = "Probability of Years Educated", xlab = "Years", ylab = "probability")
+qqnorm(ye, main = "Normal QQ Plot Years Educated")
+qqline(ye, col = "gray")
 ```
+
+This is also a poisson distribution, for similar reasons as above. 
 
 ## Question 5
 
