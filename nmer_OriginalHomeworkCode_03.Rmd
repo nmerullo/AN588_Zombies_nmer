@@ -1,0 +1,136 @@
+---
+title: "nmer_OriginalHomeworkCode_03"
+author: "Nicole Merullo"
+date: "2023-10-09"
+output:
+  rmdformats::readthedown:
+    toc: true
+---
+```{r warmbodies, echo=FALSE, fig.align='center', out.width='25%'}
+knitr::include_graphics('https://cdn.images.express.co.uk/img/dynamic/36/590x/Warm_bodies-376212.jpg?r=1686998680160') 
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(curl)
+library(ggplot2)
+```
+
+## 5 Challenges
+1.
+2.
+3.
+4.
+5.
+
+```{r load-in}
+file <- curl('https://raw.githubusercontent.com/fuzzyatelin/fuzzyatelin.github.io/master/AN588_Fall23/zombies.csv')
+d <- read.csv(file, header= TRUE, sep = ",", stringsAsFactors = FALSE)
+head(d)
+str(d)
+```
+
+## Question 1
+
+Calculate the population mean and standard deviation for each quantitative random variable (height, weight, age, number of zombies killed, and years of education). NOTE: You will not want to use the built in var() and sd() commands as these are for samples.
+
+```{r Pop-Mean}
+mh <- mean(d$height)
+mh
+mw <- mean(d$weight)
+mw
+ma <- mean(d$age)
+ma
+mzk <- mean(d$zombies_killed)
+mzk
+mye <- mean(d$years_of_education)
+mye
+```
+
+```{r Pop-SD}
+
+```
+
+## Question 2
+
+Use {ggplot} to make boxplots of each of these variables by gender.
+
+```{r Boxplot-Height}
+par(mfrow, c(2,1))
+
+```
+
+```{r Boxplot-Weight}
+par(mfrow, c(2,1))
+
+```
+
+```{r Boxplot-Kills}
+par(mfrow, c(2,1))
+
+```
+
+```{r Boxplot-YrsEducated}
+par(mfrow, c(2,1))
+
+```
+
+```{r Boxplot-Age}
+par(mfrow, c(2,1))
+
+```
+
+## Question 3
+
+Use {ggplot} to make scatterplots of height and weight in relation to age. Do these variables seem to be related? In what way?
+
+```{r Scatterplots}
+par(mfrow, c(2,1))
+
+```
+
+## Question 4
+
+Using histograms and Q-Q plots, check whether the quantitative variables seem to be drawn from a normal distribution. Which seem to be and which do not (hint: not all are drawn from the normal distribution)? For those that are not normal, can you determine from which common distribution they are drawn?
+
+```{r QQ-Height}
+par(mfrow, c(2,1))
+
+```
+
+```{r QQ-Weight}
+par(mfrow, c(2,1))
+
+```
+
+```{r QQ-Kills}
+par(mfrow, c(2,1))
+
+```
+
+```{r QQ-YrsEducated}
+par(mfrow, c(2,1))
+
+```
+
+```{r QQ-Age}
+par(mfrow, c(2,1))
+
+```
+
+## Question 5
+
+Now use the sample() function to sample ONE subset of 30 zombie survivors (without replacement) from this population and calculate the mean and sample standard deviation for each variable. Also estimate the standard error for each variable, and construct the 95% confidence interval for each mean. Note that for the variables that are not drawn from the normal distribution, you may need to base your estimate of the CIs on slightly different code than for the normal…
+
+```{r sample}
+
+```
+
+
+## Question 6 
+
+Now draw 99 more random samples of 30 zombie apocalypse survivors, and calculate the mean for each variable for each of these samples. Together with the first sample you drew, you now have a set of 100 means for each variable (each based on 30 observations), which constitutes a sampling distribution for each variable. What are the means and standard deviations of this distribution of means for each variable? How do the standard deviations of means compare to the standard errors estimated in [5]? What do these sampling distributions look like (a graph might help here)? Are they normally distributed? What about for those variables that you concluded were not originally drawn from a normal distribution?
+
+```{r sample2}
+
+```
