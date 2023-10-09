@@ -80,37 +80,61 @@ pop_sd(ye)
 Use {ggplot} to make boxplots of each of these variables by gender.
 
 ```{r Boxplot-Height}
-par(mfrow, c(2,1))
-
+ph <- ggplot(data = d, aes(x = gender, y = h))
+ph <- ph + geom_boxplot()
+ph <- ph + theme(axis.text.x = element_text(angle = 90))
+ph <- ph + ylab("Height of Zombies")
+ph
 ```
 
 ```{r Boxplot-Weight}
-par(mfrow, c(2,1))
-
+pw <- ggplot(data = d, aes(x = gender, y = w))
+pw <- pw + geom_boxplot()
+pw <- pw + theme(axis.text.x = element_text(angle = 90))
+pw <- pw + ylab("Weight of Zombies")
+pw
+```
+```{r Boxplot-Age}
+pa <- ggplot(data = d, aes(x = gender, y = a))
+pa <- pa + geom_boxplot()
+pa <- pa + theme(axis.text.x = element_text(angle = 90))
+pa <- pa + ylab("Age of Zombies")
+pa
 ```
 
 ```{r Boxplot-Kills}
-par(mfrow, c(2,1))
-
+pzk <- ggplot(data = d, aes(x = gender, y = zk))
+pzk <- pzk + geom_boxplot()
+pzk <- pzk + theme(axis.text.x = element_text(angle = 90))
+pzk <- pzk + ylab("Number of Zombies Killed")
+pzk
 ```
 
 ```{r Boxplot-YrsEducated}
-par(mfrow, c(2,1))
-
-```
-
-```{r Boxplot-Age}
-par(mfrow, c(2,1))
-
+pye <- ggplot(data = d, aes(x = gender, y = ye))
+pye <- pye + geom_boxplot()
+pye <- pye + theme(axis.text.x = element_text(angle = 90))
+pye <- pye + ylab("Years Educated")
+pye
 ```
 
 ## Question 3
 
 Use {ggplot} to make scatterplots of height and weight in relation to age. Do these variables seem to be related? In what way?
 
-```{r Scatterplots}
-par(mfrow, c(2,1))
-
+```{r Scatterplot-Height}
+ph1 <- ggplot(data = d, aes(x = a, y = h, color = factor(gender)))
+ph1 <- ph1 + xlab("Age") + ylab("Height")
+ph1 <- ph1 + geom_point()
+ph1 <- ph1 + theme(legend.position = "bottom", legend.title = element_blank())
+ph1
+```
+```{r Scatterplot-weight}
+pw1 <- ggplot(data = d, aes(x = a, y = w, color = factor(gender)))
+pw1 <- pw1 + xlab("Age") + ylab("Weight")
+pw1 <- pw1 + geom_point()
+pw1 <- pw1 + theme(legend.position = "bottom", legend.title = element_blank())
+pw1
 ```
 
 ## Question 4
@@ -127,17 +151,17 @@ par(mfrow, c(2,1))
 
 ```
 
+```{r QQ-Age}
+par(mfrow, c(2,1))
+
+```
+
 ```{r QQ-Kills}
 par(mfrow, c(2,1))
 
 ```
 
 ```{r QQ-YrsEducated}
-par(mfrow, c(2,1))
-
-```
-
-```{r QQ-Age}
 par(mfrow, c(2,1))
 
 ```
