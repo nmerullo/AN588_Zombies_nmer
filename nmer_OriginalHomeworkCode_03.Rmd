@@ -35,20 +35,44 @@ str(d)
 Calculate the population mean and standard deviation for each quantitative random variable (height, weight, age, number of zombies killed, and years of education). NOTE: You will not want to use the built in var() and sd() commands as these are for samples.
 
 ```{r Pop-Mean}
-mh <- mean(d$height)
+h <- d$height
+mh <- mean(h)
 mh
-mw <- mean(d$weight)
+w <- d$weight
+mw <- mean(w)
 mw
-ma <- mean(d$age)
+a <- d$age
+ma <- mean(a)
 ma
-mzk <- mean(d$zombies_killed)
+zk <- d$zombies_killed
+mzk <- mean(zk)
 mzk
-mye <- mean(d$years_of_education)
+ye <- d$years_of_education
+mye <- mean(ye)
 mye
 ```
+For population standard deviation, first will define a function for population variance, not sample variance. This is the sum of squares/n.
 
+```{r Pop-V}
+pop_v <- function(x) {
+    sum((x - mean(x))^2)/length(x)
+}
+pop_v(h)
+pop_v(w)
+pop_v(a)
+pop_v(zk)
+pop_v(ye)
+```
+To get the population SD, I just need to define a function taking the square root of the population variance
 ```{r Pop-SD}
-
+pop_sd <- function(x) {
+    sqrt(pop_v(x))
+}
+pop_sd(h)
+pop_sd(w)
+pop_sd(a)
+pop_sd(zk)
+pop_sd(ye)
 ```
 
 ## Question 2
