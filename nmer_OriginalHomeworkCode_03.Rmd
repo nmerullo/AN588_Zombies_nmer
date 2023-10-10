@@ -287,20 +287,22 @@ exactPoiCI(mye)
 
 Now draw 99 more random samples of 30 zombie apocalypse survivors, and calculate the mean for each variable for each of these samples. Together with the first sample you drew, you now have a set of 100 means for each variable (each based on 30 observations), which constitutes a sampling distribution for each variable. What are the means and standard deviations of this distribution of means for each variable? How do the standard deviations of means compare to the standard errors estimated in [5]? What do these sampling distributions look like (a graph might help here)? Are they normally distributed? What about for those variables that you concluded were not originally drawn from a normal distribution?
 
-```{r sample2}
+```{r 99samples}
 x <- replicate(99, slice_sample(d, n = 30, replace = FALSE)) #I refused to use a for loop here
-x <- as.data.frame(x)
+x <- t(x) #transposed so that the column names are the variables
+as.data.frame(x)
 ```
 
-```{r sample2}
-
-mHeight <- lapply(x[ ,1:99], mean(x[5,]))
+```{r 99SampleMeans}
+mHeight <- lapply(x[1:99, ], mean(x[, 5]))
 mWeight <- mean(x[6, 1:99])
 mZombies_Killed <- mean(x[7, 1:99])
 mYears_Ed <- mean(x[8, 1:99])
 mAge <- mean(x[10, 1:99])
-#y <- NULL
-#for (i in x) {
-#  y[i] <- mean(x$V1[height])
-#}
+#
+heights <- x[1:99, 5]
+mHeights <- NULL
+for (i in heights) {
+  mHeights[i] <- mean(x$height)
+}
 ```
