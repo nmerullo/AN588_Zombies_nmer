@@ -77,6 +77,7 @@ pop_sd(a)
 pop_sd(zk)
 pop_sd(ye)
 ```
+<!-- Great job on this first question! I like how you set the functions for pop_v and pop_sd. It seems much more efficient than typing out the same equation for each variable - which is what I did. - Julianna -->
 
 ## Question 2
 
@@ -120,6 +121,7 @@ pye <- pye + theme(axis.text.x = element_text(angle = 90))
 pye <- pye + ylab("Years Educated")
 pye
 ```
+<!-- Nice job here. After running your code, looking at your boxplots, and comparing it to mine, I now realize that my boxplots are incorrect and look slightly different. I used log() of the variables because I copied the code from Module 6 (ex: y=log(height)). I probably should've payed closer attention. Thanks for helping me catch my mistake :) - Julianna -->
 
 ## Question 3
 
@@ -140,6 +142,8 @@ pw1 <- pw1 + theme(legend.position = "bottom", legend.title = element_blank())
 pw1
 ```
 Looks like there is a relationship between age and hieght- height is dependent on age. As age goes up, height also goes up. However, there is no such relationship between age and weight.
+
+<!-- Nice scatterplots! I plotted my variables on opposite axes (idk if it matters), but I got pretty much the same results/saw the same trends. - Julianna -->
 
 ## Question 4
 
@@ -194,6 +198,8 @@ qqline(ye, col = "gray")
 
 This is also a poisson distribution, for similar reasons as above. 
 
+<!-- Great work! I did the same code & got the same results. - Julianna -->
+
 ## Question 5
 
 Now use the sample() function to sample ONE subset of 30 zombie survivors (without replacement) from this population and calculate the mean and sample standard deviation for each variable. Also estimate the standard error for each variable, and construct the 95% confidence interval for each mean. Note that for the variables that are not drawn from the normal distribution, you may need to base your estimate of the CIs on slightly different code than for the normal…
@@ -236,8 +242,13 @@ se(h)
 se(w)
 se(a)
 seZK <- sqrt(mzk/length(zk))
+seZK
 seYE <- sqrt(mye/length(ye))
+seYE
 ```
+<!-- Nice job here. I got the same answers. I just can't see the Sample SEs for Zombie Kills and Years of Education because you didn't print the variables you assigned them to. I've added them for you here.  -->
+<!-- I got slightly different SEs for ZK and YE. I used this formula: (sample sd) / sqrt(length(x)). - Julianna -->
+
 This sample is relatively close to the population. Most variables are at less than one standard error. Weight is almost 3 standard errors away, however. 
 
 ```{r Height-CI}
@@ -283,6 +294,19 @@ ciYE <- c(lowerYE, upperYE)
 ciYE
 exactPoiCI(mye)
 ```
+
+<!-- I liked how you still kept the code that didn't work and corrected it right after. Your commentary is great, it's easy to follow, and really helpful.  -->
+<!-- I got the same 95% CIs for the normally distributed variables (height, weight, & age), but not for the variables that do not follow normal distribution (ZK and YE).  -->
+
+<!-- I used this formula for ZK and YE: CI = mu ± Z(sigma/sqrt(n)) -->
+
+<!-- Which translates to this code: -->
+<!-- lower <- (sample mean) - (1.96*(sample sd/sqrt(n))) -->
+<!-- upper <- (sample mean) + (1.96*(sample sd/sqrt(n))) -->
+
+<!-- (1.96 represents the corresponding Z-value for 95% CI) -->
+
+<!-- Hope this helps! - Julianna -->
 
 ## Question 6 
 
@@ -353,6 +377,8 @@ seYE
 ```
 Except for weights, there standard deviation values are pretty small suggesting that there is little variance. The standard errors from the single sampling in question 5 were pretty small as well (except for weights again) which suggests that they were fairly representative of the population. The standard deviations are pretty close to each of their respective standard errors which is indicative of one of the rules of the central limit theorem - that the standard deviation will be nearly equal to the standard error of the mean.
 
+<!-- I used different code and got slightly different answers (only by ±0.6), but still saw the same trends (i.e. little variance). Nice job :) - Julianna -->
+
 Below I have plotted each sampling distribution, with two lines:
 - the black line is the mean of the sampling distributions
 -the red is the mean of the population
@@ -388,3 +414,8 @@ qqline(mEducation, col = "gray")
 ```
 
 They are all normally distributed, including years educated and zombies killed which were poisson distributed before. This demonstrates the central limit theorem!
+
+<!-- Great job here with question 6. I like how you included the 2 lines of sample mean and population mean for comparison. - Julianna -->
+
+<!-- Overall, very well done. I can tell you worked really hard on this HW code. Since we used slightly different codes in some instances, I learned a lot from your code and I left some suggestions from my code. - Julianna -->
+
