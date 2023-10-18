@@ -1,0 +1,448 @@
+---
+title: "nmer_FinalHomeworkCode_03"
+author: "Nicole Merullo"
+date: "2023-10-17"
+output:
+  rmdformats::readthedown:
+---
+```{r warmbodies, echo=FALSE, fig.align='center', out.width='25%'}
+knitr::include_graphics('https://cdn.images.express.co.uk/img/dynamic/36/590x/Warm_bodies-376212.jpg?r=1686998680160') 
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(curl)
+library(ggplot2)
+library(dplyr)
+library(sciplot)
+```
+
+## 5 Challenges
+1. Received this error while trying to run a qqplot for years educated: Error in hist.default(a, breaks = seq(0, 9, 1), probability = TRUE, main = "Probability of Years Educated",  :   some 'x' not counted; maybe 'breaks' do not span range of 'x'. I realized before I could even google it that it was because I had not swapped out my data varialbe form the last qqplot! I switched it from a for age to ye for years educated and it ran.
+2. At first I was not sure exactly how to plot the histograms in question 4. I looked back in previous modules and realized it was very similar to simulating a distrubtion to rnorm then plotting those results in a histogram, but here we already had a distribution in the various quantitative variables.I used max() and min() for each variable to determine the x axis range and breaks.
+3. I could not get the green run code button to work on my last two chunks for my histograms/qqplots in question 4. I tried knitting it to see if I could see anything in the rendered version that showed any problems or if ran the code there. I noticed an erroneous ``` in the text immediately preceding the problematic chunks. I went back to the source and deleted it. When I did that, I was able to run the two chunks. 
+4. Got this error when trying to do sample(d, 30, replace=FALSE): "Error in sample.int(length(x), size, replace, prob) : cannot take a sample larger than the population when 'replace = FALSE'". I googled it and it seems like using a dplyr function (slice_sample()) is easier than trying to make sample() work in this context. I was able to "slice" 30 rows of the original 1000 in one line of code. I also decided to use set.seed() so that the data would be the same every time it is run.
+5. I originally switched qnorm for qpois to do the CI but the upper and lower turned out the same values. I realized I needed to calculate the Standard Errors differently for those. However, that did not fix it. I searched online and found a lot of places saying to get an exact poisson CI, you need to use chi squared with alpha values. I found one website which had a formula for this. I used that formula but left my original method in the chunks in case I want to workshop it more. Here is where I found the formula: https://stats.stackexchange.com/questions/10926/how-to-calculate-confidence-interval-for-count-data-in-r
+Bonus 6th challenge: See Question 6 for graveyard of abandoned code trying to sample the data 99 times. I continued trying to use slice_sample(d) with the replicate function which replicated the data set 99 times with vectors of length 30 in each cell. I could not subset variables from it and take means, even with for loops because things were not the correct class or data type. Don't write code late at night! I talked about it with Jimmy and we agreed the general idea was right but instead needed to go back to regular old sample() and subset the data to each variable within sample. Then use mean around sample, then replicate around the whole thing with 99. Smooth sailing after that.
+
+```{r load-in}
+file <- curl('https://raw.githubusercontent.com/fuzzyatelin/fuzzyatelin.github.io/master/AN588_Fall23/zombies.csv')
+d <- read.csv(file, header= TRUE, sep = ",", stringsAsFactors = FALSE)
+head(d)
+str(d)
+```
+
+## Question 1
+
+Calculate the population mean and standard deviation for each quantitative random variable (height, weight, age, number of zombies killed, and years of education). NOTE: You will not want to use the built in var() and sd() commands as these are for samples.
+
+```{r Pop-Mean}
+h <- d$height
+mh <- mean(h)
+mh
+w <- d$weight
+mw <- mean(w)
+mw
+a <- d$age
+ma <- mean(a)
+ma
+zk <- d$zombies_killed
+mzk <- mean(zk)
+mzk
+ye <- d$years_of_education
+mye <- mean(ye)
+mye
+```
+For population standard deviation, first will define a function for population variance, not sample variance. This is the sum of squares/n.
+
+```{r Pop-V}
+pop_v <- function(x) {
+    sum((x - mean(x))^2)/length(x)
+}
+pop_v(h)
+pop_v(w)
+pop_v(a)
+pop_v(zk)
+pop_v(ye)
+```
+To get the population SD, I just need to define a function taking the square root of the population variance
+
+```{r Pop-SD}
+pop_sd <- function(x) {
+    sqrt(pop_v(x))
+}
+pop_sd(h)
+pop_sd(w)
+pop_sd(a)
+pop_sd(zk)
+pop_sd(ye)
+```
+<!-- Great job on this first question! I like how you set the functions for pop_v and pop_sd. It seems much more efficient than typing out the same equation for each variable - which is what I did. - Julianna -->
+
+## Question 2
+
+Use {ggplot} to make boxplots of each of these variables by gender.
+
+```{r Boxplot-Height}
+ph <- ggplot(data = d, aes(x = gender, y = h))
+ph <- ph + geom_boxplot()
+ph <- ph + theme(axis.text.x = element_text(angle = 90))
+ph <- ph + ylab("Heights of Pop")
+ph
+```
+
+```{r Boxplot-Weight}
+pw <- ggplot(data = d, aes(x = gender, y = w))
+pw <- pw + geom_boxplot()
+pw <- pw + theme(axis.text.x = element_text(angle = 90))
+pw <- pw + ylab("Weights of Pop")
+pw
+```
+```{r Boxplot-Age}
+pa <- ggplot(data = d, aes(x = gender, y = a))
+pa <- pa + geom_boxplot()
+pa <- pa + theme(axis.text.x = element_text(angle = 90))
+pa <- pa + ylab("Ages of Pop")
+pa
+```
+
+```{r Boxplot-Kills}
+pzk <- ggplot(data = d, aes(x = gender, y = zk))
+pzk <- pzk + geom_boxplot()
+pzk <- pzk + theme(axis.text.x = element_text(angle = 90))
+pzk <- pzk + ylab("Number of Zombies Killed")
+pzk
+```
+
+```{r Boxplot-YrsEducated}
+pye <- ggplot(data = d, aes(x = gender, y = ye))
+pye <- pye + geom_boxplot()
+pye <- pye + theme(axis.text.x = element_text(angle = 90))
+pye <- pye + ylab("Years Educated")
+pye
+```
+<!-- Nice job here. After running your code, looking at your boxplots, and comparing it to mine, I now realize that my boxplots are incorrect and look slightly different. I used log() of the variables because I copied the code from Module 6 (ex: y=log(height)). I probably should've payed closer attention. Thanks for helping me catch my mistake :) - Julianna -->
+
+## Question 3
+
+Use {ggplot} to make scatterplots of height and weight in relation to age. Do these variables seem to be related? In what way?
+
+```{r Scatterplot-Height}
+ph1 <- ggplot(data = d, aes(x = a, y = h, color = factor(gender)))
+ph1 <- ph1 + xlab("Age") + ylab("Height")
+ph1 <- ph1 + geom_point()
+ph1 <- ph1 + theme(legend.position = "bottom", legend.title = element_blank())
+ph1
+```
+```{r Scatterplot-weight}
+pw1 <- ggplot(data = d, aes(x = a, y = w, color = factor(gender)))
+pw1 <- pw1 + xlab("Age") + ylab("Weight")
+pw1 <- pw1 + geom_point()
+pw1 <- pw1 + theme(legend.position = "bottom", legend.title = element_blank())
+pw1
+```
+Looks like there is a relationship between age and hieght- height is dependent on age. As age goes up, height also goes up. However, there is no such relationship between age and weight.
+
+<!-- Nice scatterplots! I plotted my variables on opposite axes (idk if it matters), but I got pretty much the same results/saw the same trends. - Julianna -->
+
+## Question 4
+
+Using histograms and Q-Q plots, check whether the quantitative variables seem to be drawn from a normal distribution. Which seem to be and which do not (hint: not all are drawn from the normal distribution)? For those that are not normal, can you determine from which common distribution they are drawn?
+
+```{r QQ-Height}
+par(mfrow = c(1,2))
+min(h)
+max(h)
+hist(h, breaks = seq(50,90,1), probability= TRUE, main = "Probability of Height of Pop", xlab = "Height", ylab = "probability")
+qqnorm(h, main = "Normal QQ Plot for Height of Pop")
+qqline(h, col = "gray")
+```
+
+```{r QQ-Weight}
+par(mfrow = c(1,2))
+min(w)
+max(w)
+hist(w, breaks = seq(80,220,1), probability= TRUE, main = "Probability of Weight of Pop", xlab = "Weight", ylab = "probability")
+qqnorm(w, main = "Normal QQ Plot Weight of Pop")
+qqline(w, col = "gray")
+```
+
+```{r QQ-Age}
+par(mfrow = c(1,2))
+min(a)
+max(a)
+hist(a, breaks = seq(9,30,1), probability= TRUE, main = "Probability of Age of Pop", xlab = "Age", ylab = "probability")
+qqnorm(a, main = "Normal QQ Plot Age of Pop")
+qqline(a, col = "gray")
+```
+
+```{r QQ-Kills}
+par(mfrow = c(1,2))
+min(zk)
+max(zk)
+hist(zk, breaks = seq(-1,12,1), probability= TRUE, main = "Probability of Zombie Kills", xlab = " of Zombie Kills", ylab = "probability")
+qqnorm(zk, main = "Normal QQ Plot of Zombie Kills")
+qqline(zk, col = "gray")
+```
+
+This is a poisson distribution which makes sense because it is a similar scenario to the titi calls. How many kills are observed? 
+
+```{r QQ-YrsEducated}
+par(mfrow = c(1,2))
+min(ye)
+max(ye)
+hist(ye, breaks = seq(0,9,1), probability= TRUE, main = "Probability of Years Educated", xlab = "Years", ylab = "probability")
+qqnorm(ye, main = "Normal QQ Plot Years Educated")
+qqline(ye, col = "gray")
+```
+
+This is also a poisson distribution, for similar reasons as above. 
+
+<!-- Great work! I did the same code & got the same results. - Julianna -->
+
+## Question 5
+
+Now use the sample() function to sample ONE subset of 30 zombie survivors (without replacement) from this population and calculate the mean and sample standard deviation for each variable. Also estimate the standard error for each variable, and construct the 95% confidence interval for each mean. Note that for the variables that are not drawn from the normal distribution, you may need to base your estimate of the CIs on slightly different code than for the normal…
+
+```{r sample-generation}
+set.seed(1)
+thirtyz <- slice_sample(d, n = 30, replace = FALSE) #this is an easier dplyr function
+```
+
+```{r Sample-Mean}
+h <- thirtyz$height
+mh <- mean(h)
+mh
+w <- thirtyz$weight
+mw <- mean(w)
+mw
+a <- thirtyz$age
+ma <- mean(a)
+ma
+zk <- thirtyz$zombies_killed
+mzk <- mean(zk)
+mzk
+ye <- thirtyz$years_of_education
+mye <- mean(ye)
+mye
+```
+Can use built in function this time because it is a sample
+
+```{r Sample-SD}
+sd(h)
+sd(w)
+sd(a)
+sd(zk)
+sd(ye)
+```
+
+The standard error can be calculated many different ways. Can divide each sd by sqrt30, can create my own function, or I can use the sciplot built in function. I will load in sciplot and use that function. Standard error for the poisson I will do separetly since it just sqrt(lambda/n)
+
+```{r Sample-SE}
+se(h)
+se(w)
+se(a)
+# SE of poisson distribution- used sqrt(lambda/n) but will include with normal formula results for comparison. They are slightly larger SEs using the poisson formula 
+seZK <- sqrt(mzk/length(zk))
+seZK
+se(zk)
+seYE <- sqrt(mye/length(ye))
+seYE
+se(ye)
+```
+<!-- Nice job here. I got the same answers. I just can't see the Sample SEs for Zombie Kills and Years of Education because you didn't print the variables you assigned them to. I've added them for you here.  -->
+<!-- I got slightly different SEs for ZK and YE. I used this formula: (sample sd) / sqrt(length(x)). - Julianna -->
+
+This sample is relatively close to the population. Most variables are at less than one standard error. Weight is almost 3 standard errors away, however. 
+
+```{r Height-CI}
+upperH <- mh + qnorm(0.975, mean = 0, sd = 1) * se(h)
+lowerH <- mh + qnorm(0.025, mean = 0, sd = 1) * se(h)
+ciH <- c(lowerH, upperH)
+ciH
+```
+
+```{r Weight-CI}
+upperW <- mw + qnorm(0.975, mean = 0, sd = 1) * se(w)
+lowerW <- mw + qnorm(0.025, mean = 0, sd = 1) * se(w)
+ciW <- c(lowerW, upperW)
+ciW
+```
+
+```{r Age-CI}
+upperA <- ma + qnorm(0.975, mean = 0, sd = 1) * se(a)
+lowerA <- ma + qnorm(0.025, mean = 0, sd = 1) * se(a)
+ciA <- c(lowerA, upperA)
+ciA
+```
+
+```{r ZombiesKilled-CI}
+upperZK <- mzk + qpois(0.975, lambda = 0) * seZK
+lowerZK <- mzk + qpois(0.025, lambda = 0) * seZK
+ciZK <- c(lowerZK, upperZK)
+ciZK
+#this obviously doesn't work since it returns the same thing for both upper and lower
+exactPoiCI <- function (X, conf.level=0.95) {
+  alpha = 1 - conf.level
+  upper <- 0.5 * qchisq((1-(alpha/2)), (2*X)) #chi square necessary here
+  lower <- 0.5 * qchisq(alpha/2, (2*X +2))
+  return(c(lower, upper))
+}
+exactPoiCI(mzk, conf.level = 0.95) #0.95 is default but good to show what we are asking for
+#Post Peer Commentary Addition (modified to include poisson SE)
+lowerZK <- mzk - (1.96*seZK)
+upperZK <- mzk + (1.96*seZK)
+ciZK <- c(lowerZK, upperZK)
+ciZK
+```
+
+```{r YearsEducated-CI}
+upperYE <- mean(ye) + qpois(0.975, lambda = 0) * seYE
+lowerYE <- mean(ye) + qpois(0.025, lambda = 0) * seYE
+ciYE <- c(lowerYE, upperYE)
+ciYE
+exactPoiCI(mye)
+#Post Peer Commentary addition
+lowerYE <- mye - (1.96*seYE)
+upperYE <- mye + (1.96*seYE)
+ciYE <- c(lowerYE, upperYE)
+ciYE
+```
+
+<!-- I liked how you still kept the code that didn't work and corrected it right after. Your commentary is great, it's easy to follow, and really helpful.  -->
+<!-- I got the same 95% CIs for the normally distributed variables (height, weight, & age), but not for the variables that do not follow normal distribution (ZK and YE).  -->
+
+<!-- I used this formula for ZK and YE: CI = mu ± Z(sigma/sqrt(n)) -->
+
+<!-- Which translates to this code: -->
+<!-- lower <- (sample mean) - (1.96*(sample sd/sqrt(n))) -->
+<!-- upper <- (sample mean) + (1.96*(sample sd/sqrt(n))) -->
+
+<!-- (1.96 represents the corresponding Z-value for 95% CI) -->
+
+<!-- Hope this helps! - Julianna -->
+
+## Question 6 
+
+Now draw 99 more random samples of 30 zombie apocalypse survivors, and calculate the mean for each variable for each of these samples. Together with the first sample you drew, you now have a set of 100 means for each variable (each based on 30 observations), which constitutes a sampling distribution for each variable. What are the means and standard deviations of this distribution of means for each variable? How do the standard deviations of means compare to the standard errors estimated in [5]? What do these sampling distributions look like (a graph might help here)? Are they normally distributed? What about for those variables that you concluded were not originally drawn from a normal distribution?
+
+**Here's what I tried first and it created a massive matrix with every cell containing a vector:**
+
+x <- replicate(99, slice_sample(d, n = 30, replace = FALSE)) #I refused to use a for loop here
+x <- t(x) #transposed so that the column names are the variables
+as.data.frame(x)
+
+I blame slice_sample now!
+
+**Graveyard of attempted code to get means from my overly complicated matrix:**
+
+mHeight <- lapply(x[1:99, ], mean(x[, 5]))
+mWeight <- mean(x[6, 1:99])
+mZombies_Killed <- mean(x[7, 1:99])
+mYears_Ed <- mean(x[8, 1:99])
+mAge <- mean(x[10, 1:99])
+#
+heights <- x[1:99, 5]
+mHeights <- NULL
+for (i in heights) {
+  mHeights[i] <- mean(x$height)
+}
+
+Instead I am going to sample each variable independently (and that way I shouldn't need to use slice_sample either) and take the means directly in that line of code.
+
+```{r 99samples}
+set.seed(2)
+mHeight <- replicate(99, mean(sample(d$height, 30, replace = F))) #taking a sample of heights, averaging, then repeating 99 more times
+mWeight <- replicate(99, mean(sample(d$weight, 30, replace = F)))
+mAge <- replicate(99, mean(sample(d$age, 30, replace = F)))
+mZombies_Killed <- replicate(99, mean(sample(d$zombies_killed, 30, replace = F)))
+mYears_Ed <- replicate(99, mean(sample(d$years_of_education, 30, replace = F)))
+```
+
+Combine the first sample with the new ones:
+
+```{r 100SampleMeans}
+mHeights <- c(mh, mHeight)
+mWeights <- c(mw, mWeight)
+mAges <- c(ma, mAge)
+mKills <- c(mzk, mZombies_Killed)
+mEducation <- c(mye, mYears_Ed)
+```
+
+Means of Means, and SDs of Means
+
+```{r 100MeansofMeans}
+mean(mHeights)
+mean(mWeights)
+mean(mAges)
+mean(mKills)
+mean(mEducation)
+```
+
+``` {r 100SDs}
+sd(mHeights)
+sd(mWeights)
+sd(mAges)
+sd(mKills)
+sd(mEducation)
+```
+
+Standard errors from question 5, the one sampling distribution
+
+``` {r SEsFrom5}
+se(h)
+se(w)
+se(a)
+seZK
+seYE
+```
+
+Except for weights, there standard deviation values are pretty small suggesting that there is little variance. The standard errors from the single sampling in question 5 were pretty small as well (except for weights again) which suggests that they were fairly representative of the population. The standard deviations are pretty close to each of their respective standard errors which is indicative of one of the rules of the central limit theorem - that the standard deviation will be nearly equal to the standard error of the mean.
+
+<!-- I used different code and got slightly different answers (only by ±0.6), but still saw the same trends (i.e. little variance). Nice job :) - Julianna -->
+
+Below I have plotted each sampling distribution, with two lines:
+- the black line is the mean of the sampling distributions
+-the red is the mean of the population
+For the central limit theorem, the disitribution should be approximately centered on the population mean.
+I also included qqplots to show that they are normally distributed.
+I opted not go do par() because it made the plots too small to read.
+```{r SamplingDistributions}
+#Heights
+hist(mHeights, probability = T)
+abline(v = mean(mHeights))
+abline(v= mean(d$height), col = "red")
+qqnorm(mHeights, main = "Normal QQ Plot for Sampled Mean Heights")
+qqline(mHeights, col = "gray")
+#Weights
+hist(mWeights, probability = T)
+abline(v = mean(mWeights))
+abline(v= mean(d$weight), col = "red")
+qqnorm(mWeights, main = "Normal QQ Plot for Sampled Mean Weights")
+qqline(mWeights, col = "gray")
+#Ages
+hist(mAges, probability = T)
+abline(v = mean(mAges))
+abline(v= mean(d$age), col = "red")
+qqnorm(mAges, main = "Normal QQ Plot for Sampled Mean Ages")
+qqline(mAges, col = "gray")
+#ZombiesKilled
+hist(mKills, probability = T)
+abline(v = mean(mKills))
+abline(v= mean(d$zombies_killed), col = "red")
+qqnorm(mKills, main = "Normal QQ Plot for Sampled Mean Zombie Kills")
+qqline(mKills, col = "gray")
+#YearsEducated
+hist(mEducation, probability = T)
+abline(v = mean(mEducation))
+abline(v= mean(d$years_of_education), col = "red")
+qqnorm(mEducation, main = "Normal QQ Plot for Sampled Mean Years Educated")
+qqline(mEducation, col = "gray")
+```
+
+They are all normally distributed, including years educated and zombies killed which were poisson distributed before. This demonstrates the central limit theorem!
+
+<!-- Great job here with question 6. I like how you included the 2 lines of sample mean and population mean for comparison. - Julianna -->
+
+<!-- Overall, very well done. I can tell you worked really hard on this HW code. Since we used slightly different codes in some instances, I learned a lot from your code and I left some suggestions from my code. - Julianna -->
+
